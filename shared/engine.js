@@ -1,4 +1,4 @@
-/* Nightfall Theme Engine v0.3 — MIT — no network, no dependencies */
+/* Nightfall Theme Engine v0.4 — MIT — no network, no dependencies */
 (function (global) {
   'use strict';
   const clamp = (v, min, max, fallback) => Number.isFinite(Number(v)) ? Math.max(min, Math.min(max, Number(v))) : fallback;
@@ -36,10 +36,16 @@
     };
     for (const [key, [min, max]] of Object.entries(ranges)) t[key] = clamp(u[key], min, max, t[key]);
     for (const key of ['animations', 'glassEnabled', 'compact', 'introEnabled']) if (typeof u[key] === 'boolean') t[key] = u[key];
+    // blob: URLs are generated locally via URL.createObjectURL after user file selection.
+    // No hard-coded 5 MB / 9 MB media limit; avoid serializing binary into localStorage.
     for (const key of ['image', 'video']) {
-      const valid = key === 'image' ? /^data:image\/(png|jpeg|webp);base64,[\w+/=]+$/ : /^data:video\/(mp4|webm);base64,[\w+/=]+$/;
-      t[key] = typeof u[key] === 'string' && u[key].length < 9_000_000 && valid.test(u[key]) ? u[key] : '';
+      const valid = key === 'image' ? /^data:image\/[a-z0-9.+-]+;base64,[\w+/=]+$/i : /^data:video\/[a-z0-9.+-]+;base64,[\w+/=]+$/i;
+      t[key] = typeof u[key] === 'string' && (valid.test(u[key]) || /^blob:(https?:\/\/|null\/)/.test(u[key])) ? u[key] : '';
     }
+    t.mediaKey = typeof u.mediaKey === 'string' && /^(?:[a-f0-9]{64}|local-[a-f0-9-]{8,48})$/.test(u.mediaKey) ? u.mediaKey : '';
+    t.mediaName = typeof u.mediaName === 'string' ? u.mediaName.slice(0, 120) : '';
+    t.mediaMime = typeof u.mediaMime === 'string' && /^(?:image|video)\/[a-z0-9.+-]{1,50}$/.test(u.mediaMime) ? u.mediaMime : '';
+
     return t;
   }
   function rgba(hex, alpha) {

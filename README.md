@@ -1,109 +1,86 @@
-# ✦ Nightfall Theme Studio
+# Nightfall Theme Studio · v0.4.0
 
-> ChatGPT 的另一个夜晚。OLED 深色、玻璃材质、动态背景和独立主题编辑器。**非 OpenAI 官方项目**。
+> **Windows ChatGPT 换肤工具（实验版）**。深黑 OLED、动态背景、自选图片/视频、魔导书启动动画。免费、本地运行，不需要 API Key。**非 OpenAI 官方项目**。
 
-![Nightfall studio overview](docs/preview.jpg)
+![Nightfall 主界面](docs/preview.jpg)
 
-## 当前版本：v0.3.0（魔导书主题联动）
+## 🎯 现在怎么用？
 
-- ✅ **离线主题设计器**：打开 `studio/index.html`，立即看到实时聊天界面预览（只用于设计，不发送消息）。
-- ✅ **6 款预设**：Obsidian Glass、Crimson Void、Ghost Neon、Polar Mist、Monochrome、Anti-Magic Grimoire。
-- ✅ **个性化**：调色板、玻璃透明度、遮罩、圆角、字号、对话宽度、紧凑布局。
-- ✅ **启动动画**：月蚀光环、星尘凝聚、科技信号 4 种风格（新增魔导书觉醒）；支持自定义文字、时长、播放频率、ESC 跳过、实时预览。
-- ✅ **动态背景**：极光、星点粒子、渐变、自定义图片、视频（MP4/WEBM）、关闭动画。
-- ✅ **皮肤文件**：JSON 导入/导出，离线本地保存自定义主题。
-- ✅ **Chromium 浏览器扩展**：作用于 `chatgpt.com`（Manifest V3），可以读取 Nightfall JSON 并更改网页外观。
-- 🧪 **Windows 桌面客户端实验性适配**：提供 ChatGPT++ 风格 renderer tweak，不修改会话内容或业务逻辑。**未在用户 Windows 官方 ChatGPT 客户端上验证，不能保证兼容。**
-- ✅ **恢复**：关闭扩展/禁用 tweak 即可撤销本项目样式，提供独立卸载脚本。
+**以前**：打开预览 → 导出 JSON → 找目录 → 复制插件 → 重新导入。非常繁琐。
 
-## V0.3 魔导书主题与启动联动
+**v0.4**：启动主题管理器 → 选皮肤 / 上传背景 → **「一键应用到 ChatGPT」**。图片、视频不用再为了 5MB 的人为限制压缩。
 
-![Grimoire awakening / 魔导书觉醒启动动画](docs/grimoire-preview.jpg)
+### Windows 使用步骤
 
-在「主题库」选择 **Anti-Magic Grimoire**，会同时设定暗红色风格、低速背景星点、**Grimoire 魔导书觉醒**开场动画（默认 2.8 秒）。可点「▶ 预览启动」随时播放：五叶草纹章古书出现、翻开封面、暗红色反魔法星屑溢出，渐隐露出聊天预览。动画由 HTML/CSS 画出，不需要下载任何素材，也不会连接外部网站；可以按 ESC 或点击「跳过」关闭。
+1. 下载本仓库，解压到你喜欢的位置。如果使用仓库源代码方式，需要安装 **Python 3**（仅用 Python 标准库）；GitHub Actions Windows 构建产物提供无需 Python 的独立 EXE（未经代码签名，需自行确认来源）。
+2. **双击根目录 `安装并启动Nightfall.bat`**。浏览器会自动打开本机主题管理器。
+3. 主题库任选皮肤；选择「动态背景」可上传本地图片或视频。
+4. 点击 **「✦ 一键应用到 ChatGPT」**。首次会自动尝试安装 Nightfall 主题插件。若显示「运行时未安装」，按下面的兼容说明处理。
+5. 已装好兼容运行时并加载了 Nightfall 的客户端：返回桌面 ChatGPT，通常无需手动导入 JSON；若没生效，尝试彻底退出重启客户端。**是否适配你的官方客户端版本仍需 Windows 实机验证。**
+6. 不喜欢就点 **「恢复官方外观」**，也可以运行 `desktop-scripts/uninstall.ps1` 删除 Nightfall 插件。
 
-这是以《黑色五叶草》氛围为灵感的**非官方粉丝向原创 UI 设计**，不包含原作图片/徽标，也没有音频。切换到其它主题则恢复其各自的启动动画预设。导出的 JSON 会保留每套皮肤自己的 `introStyle` / `introName` / `introDuration`。
+### ⚠️ 必须说明的 Windows 官方客户端限制
 
-**已知限制**：启动动画运行在客户端网页渲染层之后，不替换 Windows 原生 splash screen。
+OpenAI 的 Windows 官方 ChatGPT 客户端**没有公开的完整换肤扩展接口**。Nightfall 不是一个能绕过此限制、直接修改官方客户端的工具。Windows 桌面换肤依赖用户**自行安装并信任**一个兼容的第三方注入运行时，例如 [ChatGPT++](https://github.com/Shunlly/chatgpt-plusplus)；这类项目并非 OpenAI 发布，且其对不同 ChatGPT / Codex 版本的兼容性并不保证。Nightfall 不会在后台默默下载、运行第三方补丁，也不会修改 Windows 系统保护设置。
 
-## 30 秒体验
+- **未安装运行时**：主题管理器可正常选皮肤、上传背景和预览，但「应用到客户端」会清楚提示未连接，**不会假报成功**。
+- **已有可用运行时**：点一次「应用」，Nightfall 自动把插件安装进该运行时，并写入皮肤配置。插件若已在官方客户端加载，会轮询配置并热更新；**只是写入配置不等于已经验证外观生效**。
+- **浏览器 ChatGPT**：可用 `extension/` 的 Chrome / Edge 扩展进行网页换肤。需要首次手动在「开发者模式」加载扩展。
 
-1. 下载项目 ZIP 并解压。
-2. 在 Windows 资源管理器中双击 `start-studio.bat`，或直接打开 `studio/index.html`。
-3. 在左侧选主题，右侧调参数；切到「启动动画」可以预览开屏，再点击“导出 .json”保存主题。
-4. 如需真正应用，请按下面选择一种适配方式。
+## 🖼️ 自定义图片 / 视频
 
-## 使用方式 1：浏览器 ChatGPT（可用路径，推荐先验收）
+- 图片通过 `image/*` 选择器选择；视频通过 `video/*` 选择器选择。常用 PNG/JPG/WEBP/AVIF、MP4/WEBM 可用。GIF 等格式能否动起来，取决于浏览器解码。
+- **移除了旧的 5MB / 9MB 人为限制**。主题设计器使用 IndexedDB 保存文件 Blob，预览使用 Object URL，不再将媒体塞进只有几 MB 的 localStorage。
+- 使用一键应用时，本机桥接工具会**逐块**复制媒体到插件专属数据目录，插件逐块读取再转成本地 Blob URL。支持超过旧上限的较大素材，不将视频编码进 JSON。
+- 但**不是无限大保证**：实际大小仍受本地磁盘、Chromium 可用内存、视频编码器与设备性能限制。非常长的 4K 视频可能卡顿；优先选 H.264 MP4 / VP9 WebM。对于不兼容编码，工具不会替你转码。
+- 素材仅保存在当前电脑；**导出的主题 JSON 不携带大型媒体数据**，共享主题时需单独附媒体文件。在其他电脑导入后重新选择素材即可。
+- 背景和配置不会上传到云端；本机服务仅绑定 `127.0.0.1`，会校验网页请求来源，关闭命令行窗口即可停止服务。
 
-1. 在 Chrome/Edge 打开 `chrome://extensions/` 或 `edge://extensions/`。
-2. 开启“开发者模式”并选择“加载已解压的扩展程序”。
-3. 选择本项目 `extension/` 文件夹。
-4. 打开 `https://chatgpt.com/`，点工具栏 Nightfall 图标，选预设或导入刚才导出的 JSON。
-5. 关闭扩展的“主题效果”即可恢复官方网页样式，无需触碰官方应用文件。
+## ✅ 已实现功能
 
-浏览器扩展只有 `storage` 权限，只在 `chatgpt.com` 页面加载。项目不包含分析、遥测、网络请求，也不读取聊天文本。
+- 6 套预设：Obsidian Glass、Crimson Void、Ghost Neon、Polar Mist、Monochrome、Anti-Magic Grimoire
+- 动态极光、星点、渐变、自定义图片/视频背景；颜色、透明度、布局精调
+- 月蚀、星尘、科技信号、魔导书觉醒 4 种可跳过的**渲染后**启动动画；不替换 Windows 原生 splash screen
+- 本地主题存储、导出/导入 JSON、一键尝试安装插件与应用、恢复默认外观
+- 可选的 Chrome / Edge 网页版插件
 
-## 使用方式 2：Windows 官方桌面客户端（实验性）
+## 故障排查
 
-**重要限制：官方 Windows ChatGPT 客户端目前没有公开的完整主题注入 API。这里的 renderer tweak 需要单独安装第三方补丁/运行时才能尝试加载，例如 ChatGPT++。是否能作用于你安装的具体 ChatGPT Windows 客户端构建，尚待本机验证。**
+| 现象 | 说明和处理 |
+| --- | --- |
+| 双击无反应 | 使用源代码包时检查 Python 3 是否安装、`py -3 --version` 是否能运行；不要直接双击 `studio/index.html` 来使用客户端应用功能。 |
+| 状态显示「离线预览」 | 正在直接打开 HTML 文件；请通过根目录 BAT 启动。 |
+| 状态显示「桌面运行时未安装」 | 官方客户端没有公开换肤 API；请自行评估兼容第三方运行时的安装风险。未安装时不会强行注入。 |
+| 点击「应用」后聊天界面没变化 | 检查插件是否被兼容运行时真正加载；重启客户端。提供 Windows 应用版本、Nightfall 界面状态截图协助排查。 |
+| 大视频卡顿、黑屏 | 不是文件大小开关问题，可能是磁盘、解码格式、显存/内存不足；可转 H.264 MP4 或改静态图。 |
+| 主题切换后背景丢失 | 重新选择图片/视频；文件存放于浏览器 IndexedDB，浏览器清站点数据会清掉素材缓存。 |
+| 要卸载 / 还原 | 点「恢复官方外观」或执行 `powershell -File desktop-scripts/uninstall.ps1`；如果第三方运行时损坏，依运行时自身流程修复。 |
 
-此项目不会提供未经核实的一键补丁，也不建议关闭杀毒软件或绕开客户端完整性检查。安装第三方运行时前请自行阅读它的权限、代码和风险说明。
-
-1. 预先安装并确认可工作的适配运行时，例如 https://github.com/Shunlly/chatgpt-plusplus （*第三方项目，风险自负，目标兼容性须验证*）。
-2. 安装好运行时后，在 PowerShell 执行本项目 `desktop-scripts/install.ps1`（或手动复制 `desktop-tweak/manifest.json` 和 `desktop-tweak/index.js` 到 `%APPDATA%\chatgpt-plusplus\tweaks\nightfall-theme-studio\`）。
-3. 重新加载 tweaks 或重启被该运行时支持的客户端，在其扩展设置中找到 **Nightfall Studio**。
-4. 导入主题文件、切换预设，或直接在插件页调整颜色和尺寸。
-5. 要卸载：关闭客户端，执行 `desktop-scripts/uninstall.ps1`，再重新打开。脚本只删除 ID 匹配的 Nightfall tweak 文件夹。
-
-*提示：Nightfall 仅提供视觉覆盖层，不保证每一个原生窗口、标题栏、菜单都会改变。Electron/WebView/Codex 的运行环境可能不同，选择器需要随宿主版本适配。*
-
-## 项目结构
+## 📁 项目目录
 
 ```text
-Nightfall_Theme_Studio/
-├── studio/               离线主题设计器，可直接打开 index.html
-├── shared/engine.js      主题数据规范 / CSS / 动态背景引擎
-├── extension/            Chromium MV3 浏览器扩展（含打包好的 content.js）
-├── desktop-tweak/        实验性 renderer 插件（含打包好的 index.js）
-├── desktop-scripts/      构建脚本 + Windows 插件安装 / 卸载
-├── tests/                Node.js 内核测试 + 浏览器 UI 冒烟测试
-├── themes/               预置的示例主题 JSON
-└── docs/                 产品边界与 UI 预览
+安装并启动Nightfall.bat    ← Windows 推荐入口
+start-studio.bat           ← 与上面相同的本地启动方式
+studio/                    ← 可视化主题编辑器
+shared/                    ← CSS / Canvas 动效引擎
+desktop-scripts/bridge.py  ← 本地 HTTP 服务 / 主题应用 / 分块媒体存储
+desktop-tweak/             ← 实验性 Windows 渲染层插件
+extension/                 ← 浏览器 ChatGPT 扩展
+themes/                    ← 主题配置示例
+tests/                     ← 测试
 ```
 
-## 开发与构建
+## 🔧 开发验证
 
-不需要服务器、不需要 API key、不需要 npm 依赖，也不需要上传账号信息。
+不依赖第三方 Python 库：
 
 ```bash
-python desktop-scripts/build.py    # 将 shared/engine.js 与适配脚本打包为单文件
-node --test tests/engine.test.cjs  # 测试主题数据验证和 CSS 安全边界
+python desktop-scripts/build.py
+python -m unittest discover -s tests -p 'test_bridge.py' -v
+node --test tests/engine.test.cjs
+# 可选：pip install playwright; python tests/smoke_ui.py
 ```
 
-更改 `shared/engine.js`、`desktop-tweak/adapter.js` 或 `extension/adapter.js` 后需要重新运行 build 脚本。`desktop-tweak/index.js` 和 `extension/content.js` 已在项目包里，可直接安装。
+**安全边界**：不修改 ChatGPT 官方程序包、不使用开发者密钥、不监视或保存聊天内容、不打开公网监听地址。第三方插件运行时可能有额外风险，需要用户自己判断和确认。运行时兼容性、Windows 原生启动画面更改并非 v0.4 已实现能力。
 
-## 数据与安全边界
-
-- 所有皮肤配置都在本地处理；主题 JSON 可能包含 Base64 背景素材，分享前请检查隐私内容。
-- 背景图片和视频限定格式与大小；HTML/CSS 动态样式使用校验后的颜色和数值，用户 JSON 不作为可执行代码运行。
-- 当前版本**不支持任意用户 CSS/JS 注入**，这是有意的安全约束；未来高级模式需要独立隔离和权限设计。
-- 预览只模拟聊天 UI，不提供真实聊天交互。
-- 针对客户端升级，外观选择器可能部分失效。遇到兼容问题应先禁用 Nightfall，保留原始客户端功能。
-
-## 计划
-
-- [ ] 针对真实 Windows ChatGPT 官方客户端做构建号兼容性测试
-- [ ] 更细致的动效时间轴、可编辑的关键帧、GIF/WebM 自定义开场
-- [ ] 更完整的设置窗口、消息卡片和原生弹窗适配
-- [ ] 主题市场（离线 JSON 导入优先）
-- [ ] 主题包图片资源的自动压缩 / 空间统计
-
-## 授权
-
-MIT License。非官方项目，不代表 OpenAI 或 ChatGPT 客户端团队。
-
-## 启动动画的技术边界
-
-Nightfall 的启动动画是**renderer 渲染后叠加的全屏过渡层**，适用于离线预览与可用的 renderer tweak 运行时。它无法修改 Windows 官方 ChatGPT 客户端真正的原生启动屏、加载顺序、系统窗口或登录流程。第三方运行时在用户 Windows 构建上的兼容性尚未验证。
-
-默认按窗口会话展示一次，用户可选每次渲染器加载都展示。动画在减少动态效果模式下自动跳过；ESC 或点击「跳过」能立即关闭。
+MIT License · Unofficial project; not endorsed by OpenAI.

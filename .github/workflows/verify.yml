@@ -1,0 +1,37 @@
+name: Nightfall tests and Windows portable build
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/engine.test.cjs
+      - run: python -m unittest discover -s tests -p 'test_bridge.py' -v
+  windows-portable:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p 'test_bridge.py' -v
+      - run: python -m pip install pyinstaller==6.16.0
+      - name: Build Windows executable
+        shell: pwsh
+        run: |
+          pyinstaller --noconfirm --clean --onefile --console --name Nightfall-Theme-Studio --add-data "studio;studio" --add-data "shared;shared" --add-data "desktop-tweak;desktop-tweak" desktop-scripts/bridge.py
+      - name: Upload unsigned portable executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: Nightfall-Theme-Studio-Windows-UNSIGNED
+          path: dist/Nightfall-Theme-Studio.exe

@@ -10,7 +10,7 @@
 <body>
 <div id="app">
   <aside class="rail">
-    <div class="brand"><div class="brandmark">✦</div><div><strong>NIGHTFALL</strong><small>THEME STUDIO <span>0.3</span></small></div></div>
+    <div class="brand"><div class="brandmark">✦</div><div><strong>NIGHTFALL</strong><small>THEME STUDIO <span>0.4</span></small></div></div>
     <div class="rail-label">WORKSPACE</div>
     <nav class="railnav" aria-label="工作区导航">
       <button class="navitem selected" data-page="themes"><span class="navicon">◫</span> 主题库 <span class="navarrow">↗</span></button>
@@ -22,24 +22,25 @@
     <div class="rail-label section-gap">LIBRARY</div>
     <div id="custom-list" class="saved-list"></div>
     <button id="import-rail" class="rail-add">＋ 导入主题文件</button>
-    <div class="railbottom"><div class="status"><span class="dot"></span> LOCAL MODE <span class="status-note">OFFLINE</span></div><div class="disclaimer">独立可运行 · 不连接账号<br />预览并编辑，再导出至客户端插件</div></div>
+    <div class="railbottom"><div class="status"><span class="dot"></span> LOCAL MODE <span class="status-note">OFFLINE</span></div><div class="disclaimer">本地运行 · 不连接账号<br />先选皮肤，再点「一键应用」</div></div>
   </aside>
   <main class="workspace">
-    <header class="topbar"><div><span class="crumb">MY WORKSPACE</span><span class="separator">/</span><span id="crumb-page">主题库</span></div><div class="top-actions"><span class="build-pill">● LIVE PREVIEW</span><button class="icon-button" id="toggle-motion" title="切换动态背景">◍</button><button class="top-button" id="export-top">导出主题 <span>↗</span></button></div></header>
+    <header class="topbar"><div><span class="crumb">MY WORKSPACE</span><span class="separator">/</span><span id="crumb-page">主题库</span></div><div class="top-actions"><span class="build-pill" id="bridge-status">○ 正在检测</span><button class="icon-button" id="toggle-motion" title="切换动态背景">◍</button><button class="top-button" id="connect-client">连接客户端</button><button class="top-button" id="export-top">导出主题 <span>↗</span></button></div></header>
     <section class="workspace-content"><div class="intro"><div><div class="overline">PERSONALIZATION / STUDIO</div><h1 id="page-title">创造你的 <em>ChatGPT.</em></h1><p id="page-description">一层光，一点性格。让熟悉的对话窗口拥有自己的气质。</p></div><span class="project-tag">01 / NIGHTFALL</span></div>
       <div class="theme-strip" id="theme-strip" aria-label="主题预设"></div>
       <div class="section-heading"><div><span class="heading-icon">◫</span><strong>实时预览</strong><span class="section-sub">所见即所得的外观演示</span></div><div class="preview-switch"><button class="intro-preview-btn" id="replay-intro" title="在聊天界面模拟预览启动动画">▶ 预览启动</button><button class="active" data-screen="desktop">▣ 桌面</button><button data-screen="compact">▯ 紧凑</button></div></div>
       <div class="preview-shell"><div class="preview-browser"><div class="browser-dots"><i></i><i></i><i></i></div><span class="browser-title">ChatGPT · Nightfall Preview</span><div class="browser-tools">− &nbsp; □ &nbsp; ×</div></div><div id="preview" class="preview"><div class="mock-sidebar"><div class="mock-logo"><span class="swirl">✳</span><span>ChatGPT</span><span class="down">⌄</span></div><button class="new-chat"><span>✎</span> 新聊天 <span class="shortcut">⌘ K</span></button><div class="mock-group">最近对话 <span>···</span></div><div class="mock-chat active">✧ &nbsp; 探索一款新的设计语言</div><div class="mock-chat">✧ &nbsp; 夜幕配色的灵感</div><div class="mock-chat">✧ &nbsp; 本周的灵感清单</div><div class="mock-chat">✧ &nbsp; 写一个 Python 小工具</div><div class="mock-avatar"><div class="avatar">N</div><div><b>Personal Workspace</b><small>Free to create</small></div><span>⌄</span></div></div><div class="mock-main"><div class="mock-top"><span>ChatGPT <span class="subtle">⌄</span></span><span>◌ &nbsp; ⋮</span></div><div class="mock-scroll"><div class="mini-label">✦ &nbsp; DESIGN EXPERIMENT</div><div class="mock-greeting">对话，也可以<br/><span>很有设计感。</span></div><div class="mock-subtext">在自己的空间里，灵感值得一个更好的容器。</div><div class="mock-user">我想要一个极简、富有层次的 ChatGPT 界面。</div><div class="mock-answer"><span class="ai-symbol">✳</span><div><p>当然。我们会以 <strong>深色基底</strong> 为画布，让柔和的光感与透明材质建立层次。</p><div class="mock-cards"><div><span>◈</span><b>Clean & Focused</b><small>专注当下</small></div><div><span>✦</span><b>Made Personal</b><small>自由表达</small></div></div></div></div></div><div class="composer"><span class="placeholder">发送消息给 ChatGPT…</span><div class="compose-bottom"><span>＋</span><span>⌘ &nbsp; 工具</span><span class="compose-spacer"></span><span>◉</span><span class="send-arrow">↑</span></div></div><div class="preview-footnote">ChatGPT can make mistakes. Check important info.</div></div></div></div>
-      <div class="under-preview"><div><span class="live-dot"></span><strong id="active-name">Obsidian Glass</strong><span>· 实时编辑</span></div><div class="button-row"><button class="quiet-button" id="reset">↶ 恢复预设</button><button class="quiet-button" id="save">♡ 保存为新主题</button><button class="primary-button" id="export">导出 .json ↗</button></div></div>
+      <div class="under-preview"><div><span class="live-dot"></span><strong id="active-name">Obsidian Glass</strong><span>· 实时编辑</span></div><div class="button-row"><button class="quiet-button" id="reset">↶ 恢复预设</button><button class="quiet-button" id="save">♡ 保存为新主题</button><button class="quiet-button" id="export">导出 .json</button><button class="quiet-button" id="disable-client">恢复官方外观</button><button class="primary-button" id="apply-client">✦ 一键应用到 ChatGPT</button></div></div>
+      <div class="compat-hint" id="compat-hint">桌面换肤需要兼容的第三方插件运行时。没有运行时，也可以先体验预览与主题编辑。</div>
       <div class="bottom-note"><div><span>✦</span><div><b>DESIGN WITHOUT LIMITS.</b><p>预览不需要联网。聊天内容仅用于模拟，真正应用需安装对应客户端适配插件。</p></div></div><button id="open-instructions">查看安装方式 ↗</button></div>
     </section>
   </main>
   <aside class="inspector"><div class="inspector-head"><div><span class="inspector-mini">EDITOR / 01</span><h2 id="editor-title">主题设置</h2></div><span class="badge">LIVE</span></div><div id="inspector-body" class="inspector-body"></div><div class="inspector-bottom"><button id="import-inspector">⤓ 导入</button><button id="export-inspector">↗ 导出</button></div></aside>
 </div>
 <input type="file" accept="application/json,.json" id="import-file" hidden />
-<input type="file" accept="image/png,image/jpeg,image/webp" id="image-file" hidden />
-<input type="file" accept="video/mp4,video/webm" id="video-file" hidden />
-<dialog id="help-dialog"><div class="dialog-top"><div><span class="overline">INSTALLATION</span><h2>如何应用到客户端？</h2></div><button id="close-dialog" aria-label="关闭">×</button></div><p>Nightfall Studio 是离线设计器。你可以直接编辑并导出皮肤 JSON，随后在桌面插件的设置页导入。<strong>Windows 官方客户端没有公开的完整换肤 API，插件模式依赖第三方注入运行时并且尚未在你的具体客户端版本上验证。</strong></p><ol><li>先在此处编辑并导出 JSON。</li><li>阅读项目 README，安装可用的第三方 renderer-tweak 运行时。</li><li>将 <code>desktop-tweak</code> 的 <code>manifest.json</code>、<code>index.js</code> 安装到运行时的 tweaks 目录。</li><li>打开运行时提供的 Nightfall 设置页，导入刚才的主题。</li></ol><p class="subtle">不建议为了换肤关闭系统安全防护；无法兼容时使用浏览器扩展方案。</p><button id="close-dialog-bottom" class="primary-button">知道了</button></dialog>
+<input type="file" accept="image/*" id="image-file" hidden />
+<input type="file" accept="video/*" id="video-file" hidden />
+<dialog id="help-dialog"><div class="dialog-top"><div><span class="overline">INSTALLATION</span><h2>如何应用到客户端？</h2></div><button id="close-dialog" aria-label="关闭">×</button></div><p>双击「安装并启动Nightfall.bat」，连接到本地主题桥接工具后，选择主题点击「一键应用到 ChatGPT」。首次使用需要已安装兼容的第三方客户端插件运行时。<strong>Windows 官方客户端没有公开的完整换肤 API，插件模式依赖第三方注入运行时并且尚未在你的具体客户端版本上验证。</strong></p><ol><li>双击「安装并启动Nightfall.bat」打开工具。</li><li>如状态显示未就绪，请先自行了解、安装兼容的第三方 renderer-tweak 运行时。</li><li>点击「连接客户端」，工具会将 Nightfall 插件复制到对应目录。</li><li>点击「一键应用到 ChatGPT」，刷新/重启支持的客户端查看效果。</li></ol><p class="subtle">不建议为了换肤关闭系统安全防护；无法兼容时使用浏览器扩展方案。</p><button id="close-dialog-bottom" class="primary-button">知道了</button></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="../shared/engine.js"></script>
 <script src="app.js"></script>

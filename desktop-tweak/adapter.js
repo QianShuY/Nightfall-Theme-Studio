@@ -9,6 +9,57 @@
   let mutationObserver = null;
   let lastShell = null;
   let intro = null;
+  let liveTimer = null;
+  let loadingLive = false;
+  let lastLive = null;
+  let loadSequence = 0;
+  let mediaObjectURL = null;
+  let mediaObjectKey = null;
+  async function hydrated(raw) {
+    const t = E.normalized(raw);
+    if (!t.mediaKey || !['image','video'].includes(t.bgType) || !apiRef?.fs?.read) return t;
+    if (mediaObjectKey === t.mediaKey && mediaObjectURL) {
+      t[t.bgType] = mediaObjectURL; return t;
+    }
+    try {
+      const meta = JSON.parse(await apiRef.fs.read('media/' + t.mediaKey + '.json'));
+      if (meta.mediaKey !== t.mediaKey || meta.kind !== t.bgType || !/^\w+[\w.+-]*\/[\w.+-]+$/.test(meta.mime) ||
+          !Number.isInteger(meta.chunks) || meta.chunks < 1 || meta.chunks > 200000) throw Error('invalid media metadata');
+      const buffers=[];
+      // Reading in small chunks avoids the old 5MB cap and keeps each IPC call bounded.
+      for(let i=0; i<meta.chunks; i++){
+        const part=await apiRef.fs.read('media/' + t.mediaKey + '-' + String(i).padStart(6,'0') + '.b64');
+        const binary=atob(part);
+        const bytes=new Uint8Array(binary.length);
+        for(let j=0; j<binary.length; j++)bytes[j]=binary.charCodeAt(j);
+        buffers.push(bytes);
+      }
+      const uri=URL.createObjectURL(new Blob(buffers,{type:meta.mime}));
+      if(mediaObjectURL)URL.revokeObjectURL(mediaObjectURL);
+      mediaObjectURL=uri;mediaObjectKey=t.mediaKey;
+      t[t.bgType]=uri;
+    }catch(err){apiRef?.log?.warn?.('Nightfall local media could not load',String(err));}
+    return t;
+  }
+  async function loadLive(){
+    if(loadingLive || !apiRef?.fs?.read)return;
+    loadingLive=true;
+    try{
+      const raw=await apiRef.fs.read('live.json');
+      if(raw===lastLive)return;
+      const seq=++loadSequence;
+      const data=JSON.parse(raw);
+      if(data?.enabled===false){
+        lastLive=raw;apiRef.storage.set('enabled',false);
+        intro?.destroy();E.unmount();return;
+      }
+      const applied=await hydrated(data);
+      if(seq!==loadSequence || !apiRef)return;
+      lastLive=raw;
+      use(applied);
+    }catch(error){ // live.json is optional until first one-click apply.
+    }finally{loadingLive=false;}
+  }
   function use(t) {
     theme = E.normalized(t);
     if (apiRef) apiRef.storage.set('theme', theme);
@@ -30,12 +81,12 @@
   function number(root,key,label,min,max,step){const input=create('input',{type:'range',min:String(min),max:String(max),step:String(step||1)});input.value=String(theme[key]);input.style.cssText='width:45%;accent-color:'+theme.accent;input.addEventListener('input',()=>use({...theme,[key]:Number(input.value)}));row(root,label,input)}
   function picker(root,key,label){const input=create('input',{type:'color'});input.value=theme[key];input.addEventListener('input',()=>use({...theme,[key]:input.value}));row(root,label,input)}
   function download(){const data=new Blob([JSON.stringify(theme,null,2)],{type:'application/json'});const a=create('a');a.href=URL.createObjectURL(data);a.download='nightfall-theme.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),800)}
-  function uploadTheme(){const input=create('input',{type:'file',accept:'.json,application/json'});input.onchange=async()=>{const f=input.files?.[0];if(!f||f.size>9e6)return;try{const x=JSON.parse(await f.text());if(x&&typeof x==='object'&&(x.accent||x.base))use({...x,id:x.id||'imported'});else alert('主题格式不正确')}catch{alert('无法读取 JSON 主题')}};input.click()}
-  function background(kind){const input=create('input',{type:'file',accept:kind==='image'?'image/png,image/jpeg,image/webp':'video/mp4,video/webm'});input.onchange=()=>{const f=input.files?.[0];if(!f)return;if(f.size>5e6){alert('媒体文件请小于 5MB');return}const reader=new FileReader();reader.onload=()=>{use({...theme,bgType:kind,[kind]:String(reader.result)});alert('背景已应用')};reader.readAsDataURL(f)};input.click()}
+  function uploadTheme(){const input=create('input',{type:'file',accept:'.json,application/json'});input.onchange=async()=>{const f=input.files?.[0];if(!f)return;try{const x=JSON.parse(await f.text());if(x&&typeof x==='object'&&(x.accent||x.base))use({...x,id:x.id||'imported'});else alert('主题格式不正确')}catch{alert('无法读取 JSON 主题')}};input.click()}
+  function background(kind){const input=create('input',{type:'file',accept:kind==='image'?'image/png,image/jpeg,image/webp':'video/mp4,video/webm'});input.onchange=()=>{const f=input.files?.[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{use({...theme,bgType:kind,[kind]:String(reader.result)});alert('背景已应用')};reader.readAsDataURL(f)};input.click()}
   function buildPage(root){
     root.replaceChildren();root.style.cssText='max-width:660px;margin:auto;padding:12px 2px 30px';
     const title=create('h2',{},'Nightfall Theme Studio');title.style.cssText='font-weight:680;font-size:21px;margin:0 0 8px';root.append(title);
-    const desc=create('p',{},'Windows / Renderer Theme · 实时修改 · 离线存储');desc.style.cssText='font-size:12px;color:#9e9fb0;margin-bottom:15px';root.append(desc);
+    const desc=create('p',{},'Windows / Renderer Theme · 实时修改 · 离线存储。推荐用 Nightfall Studio 一键应用大媒体文件。');desc.style.cssText='font-size:12px;color:#9e9fb0;margin-bottom:15px';root.append(desc);
     txt(root,'主题预设','预设以外的编辑内容通过导入 JSON 保留');
     const selects=create('div');selects.style.cssText='display:flex;gap:7px;flex-wrap:wrap';for(const p of Object.values(E.PRESETS)){selects.append(btn(p.name,()=>use(p)))}root.append(selects);
     txt(root,'视觉参数');picker(root,'accent','强调色');picker(root,'base','背景色');picker(root,'surface','浮层色');number(root,'darkness','背景暗化',0,100);number(root,'glass','玻璃透明度',0,95);number(root,'radius','圆角大小',0,36);number(root,'fontSize','字体大小',12,19);number(root,'sidebarWidth','侧边栏宽度',190,330);number(root,'chatWidth','聊天内容宽度',560,1120);number(root,'particles','粒子数量',0,100);
@@ -64,9 +115,11 @@
         }
         if(shouldShow)intro=E.showIntro(document.body,theme);
       }
+      void loadLive();
+      liveTimer=setInterval(()=>{void loadLive()},1800);
       reg=api.settings?.registerPage({id:'nightfall',title:'Nightfall Studio',description:'动态背景 · 自定义皮肤',render(root){buildPage(root)}});
       mutationObserver=new MutationObserver(()=>tagRoot());mutationObserver.observe(document.documentElement,{childList:true,subtree:true});
     },
-    stop(){intro?.destroy();intro=null;mutationObserver?.disconnect();mutationObserver=null;reg?.unregister?.();reg=null;E.unmount();apiRef=null;lastShell=null}
+    stop(){clearInterval(liveTimer);liveTimer=null;loadSequence++;lastLive=null;intro?.destroy();intro=null;mutationObserver?.disconnect();mutationObserver=null;reg?.unregister?.();reg=null;E.unmount();if(mediaObjectURL)URL.revokeObjectURL(mediaObjectURL);mediaObjectURL=null;mediaObjectKey=null;apiRef=null;lastShell=null}
   };
 })();
