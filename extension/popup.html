@@ -1,0 +1,12 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+*{box-sizing:border-box}body{width:305px;margin:0;color:#eaeaf3;background:#11121a;font:12px "Segoe UI",sans-serif;padding:22px}header{display:flex;align-items:center;gap:10px;margin-bottom:20px}header span{font-size:24px;color:#b3aaff}header b{font-size:15px;letter-spacing:1px}header small{display:block;color:#9294a9;font-size:10px;margin-top:3px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0}.presets{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0}button{cursor:pointer;background:#272837;color:#e9e9fa;border:1px solid #444657;border-radius:8px;padding:10px 9px;font:inherit}button:hover{border-color:#aaa7ec}button.on{border-color:#b7b2fb;background:#302e4b}input[type=color]{border:0;background:transparent;height:30px;width:43px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0}select{background:#222432;border:1px solid #4d4d60;border-radius:7px;padding:7px;color:#ddd}#status{font-size:10px;color:#9295a9;line-height:1.8}label{font-size:11px}
+</style></head><body>
+<header><span>✦</span><div><b>NIGHTFALL</b><small>CHATGPT THEME STUDIO</small></div></header>
+<div class="row"><label for="enable">主题效果</label><input type="checkbox" id="enable" checked /></div>
+<div class="presets" id="presets"></div>
+<div class="row"><label for="accent">强调色</label><input type="color" id="accent" value="#8A9EF4" /></div>
+<div class="row"><label for="background">动态背景</label><select id="background"><option value="aurora">极光</option><option value="stars">星点</option><option value="gradient">渐变</option><option value="none">纯色</option><option value="image">自定义图片</option><option value="video">自定义视频</option></select></div>
+<div class="actions"><button id="import">导入 JSON</button><button id="export">导出 JSON</button><button id="image">上传图片</button><button id="video">上传视频</button></div>
+<input hidden id="file-json" type="file" accept=".json,application/json"/><input hidden id="file-image" type="file" accept="image/png,image/jpeg,image/webp"/><input hidden id="file-video" type="file" accept="video/mp4,video/webm"/>
+<div id="status">仅作用于 chatgpt.com · 不读取对话内容<br>开启后页面无需刷新即可应用。</div>
+<script src="popup.js"></script></body></html>

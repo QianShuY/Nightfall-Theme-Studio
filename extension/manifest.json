@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Nightfall Theme Studio",
+  "short_name": "Nightfall",
+  "description": "Local ChatGPT cosmetic theme with motion backgrounds and custom presets. Unofficial.",
+  "version": "0.3.0",
+  "permissions": ["storage"],
+  "host_permissions": ["https://chatgpt.com/*"],
+  "action": {"default_popup": "popup.html", "default_title": "Nightfall Theme Studio"},
+  "content_scripts": [{"matches": ["https://chatgpt.com/*"], "js": ["content.js"], "run_at": "document_idle"}]
+}

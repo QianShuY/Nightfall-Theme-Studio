@@ -1,0 +1,11 @@
+{
+  "id": "com.nightfall.theme-studio",
+  "name": "Nightfall Theme Studio",
+  "version": "0.3.0",
+  "description": "A cosmetic-only dark glass theme with local presets, media backgrounds and theme import/export.",
+  "author": {"name": "Nightfall Theme Studio"},
+  "tags": ["ui", "themes", "personalization"],
+  "scope": "renderer",
+  "permissions": ["settings"],
+  "main": "index.js"
+}
